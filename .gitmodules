@@ -1,0 +1,6 @@
+[submodule "WSL2-Linux-Kernel"]
+	path = WSL2-Linux-Kernel
+	url = https://github.com/microsoft/WSL2-Linux-Kernel.git
+[submodule "libudev-zero"]
+	path = libudev-zero
+	url = https://github.com/illiliti/libudev-zero
