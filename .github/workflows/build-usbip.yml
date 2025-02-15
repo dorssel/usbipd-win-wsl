@@ -25,6 +25,11 @@ jobs:
         with:
           submodules: recursive
 
+      - name: Install tooling
+        run: |
+          sudo apt-get update
+          sudo apt-get install gcc-aarch64-linux-gnu
+
       - name: Build libudev (x64)
         run: |
           cd libudev-zero
