@@ -30,46 +30,50 @@ jobs:
           sudo apt-get update
           sudo apt-get install gcc-aarch64-linux-gnu
 
-      - name: Patch sources
-        run: |
-          cd WSL2-Linux-Kernel
-          patch -p1 < ../WSL2-Linux-Kernel.diff
-
       - name: Build libudev (x64)
         run: |
           cd libudev-zero
-          make libudev.a
-          mkdir -p x64
-          cp libudev.a x64
           make clean
+          make DESTDIR=x64 install-static
 
       - name: Build libudev (arm64)
         run: |
           cd libudev-zero
-          make CC=aarch64-linux-gnu-gcc AR=aarch64-linux-gnu-ar libudev.a
-          mkdir -p arm64
-          cp libudev.a arm64
           make clean
+          make CC=aarch64-linux-gnu-gcc AR=aarch64-linux-gnu-ar DESTDIR=arm64 install-static
+
+      - name: Prepare building usbip
+        run: |
+          cd WSL2-Linux-Kernel/tools/usb/usbip
+          aclocal
+          libtoolize
+          autoheader
+          autoconf
+          automake --add-missing
 
       - name: Build usbip (x64)
         run: |
           cd WSL2-Linux-Kernel/tools/usb/usbip
-          autoconf
-          ./configure LDFLAGS=-L`realpath ../../../../libudev-zero/x64`
-          make
+          ./configure --disable-shared \
+            CFLAGS=-I`realpath ../../../../libudev-zero/x64/usr/local/include` \
+            LDFLAGS="--static -Wl,--strip-all  -L`realpath ../../../../libudev-zero/x64/usr/local/lib`"
+          make clean
+          make -C libsrc
+          make -C src usbip
           mkdir -p "${{ github.workspace }}/x64"
           cp src/usbip "${{ github.workspace }}/x64"
-          make clean
 
       - name: Build usbip (arm64)
         run: |
           cd WSL2-Linux-Kernel/tools/usb/usbip
-          autoconf
-          ./configure --host=aarch64-linux-gnu LDFLAGS=-L`realpath ../../../../libudev-zero/arm64`
-          make
+          ./configure --host=aarch64-linux-gnu --disable-shared \
+            CFLAGS=-I`realpath ../../../../libudev-zero/arm64/usr/local/include` \
+            LDFLAGS="--static -Wl,--strip-all  -L`realpath ../../../../libudev-zero/arm64/usr/local/lib`"
+          make clean
+          make -C libsrc
+          make -C src usbip
           mkdir -p "${{ github.workspace }}/arm64"
           cp src/usbip "${{ github.workspace }}/arm64"
-          make clean
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
