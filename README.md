@@ -6,7 +6,8 @@ SPDX-License-Identifier: GPL-3.0-only
 
 # usbipd-win-wsl
 
-This is a helper project to build a distribution independent `usbip` client for Windows Subsystem for Linux (WSL).
+This is a helper project to build a distribution independent `usbip` client for Windows Subsystem for Linux (WSL),
+statically linked against [musl libc](https://musl.libc.org/).
 The binaries are used in the main project [usbipd-win](https://github.com/dorssel/usbipd-win).
 
 The binary `usbip` is built from sources subject to different (compatible) licenses:
