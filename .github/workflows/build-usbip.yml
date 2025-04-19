@@ -27,20 +27,30 @@ jobs:
 
       - name: Install tooling
         run: |
-          sudo apt-get update
-          sudo apt-get install gcc-aarch64-linux-gnu
+          wget https://musl.cc/x86_64-linux-musl-cross.tgz
+          wget https://musl.cc/aarch64-linux-musl-cross.tgz
+          tar xvfz x86_64-linux-musl-cross.tgz
+          tar aarch64-linux-musl-cross.tgz
 
       - name: Build libudev (x64)
         run: |
           cd libudev-zero
           make clean
-          make DESTDIR=x64 install-static
+          make \
+            CC=`realpath ../x86_64-linux-musl-cross/bin/x86_64-linux-musl-cc` \
+            AR=`realpath ../x86_64-linux-musl-cross/bin/x86_64-linux-musl-ar` \
+            DESTDIR=x64 \
+            install-static
 
       - name: Build libudev (arm64)
         run: |
           cd libudev-zero
           make clean
-          make CC=aarch64-linux-gnu-gcc AR=aarch64-linux-gnu-ar DESTDIR=arm64 install-static
+          make \
+            CC=`realpath ../aarch64-linux-musl-cross/bin/aarch64-linux-musl-cc` \
+            AR=`realpath ../aarch64-linux-musl-cross/bin/aarch64-linux-musl-ar` \
+            DESTDIR=arm64 \
+            install-static
 
       - name: Prepare building usbip
         run: |
@@ -54,9 +64,12 @@ jobs:
       - name: Build usbip (x64)
         run: |
           cd WSL2-Linux-Kernel/tools/usb/usbip
-          ./configure --disable-shared \
+          ./configure \
+            --host=x86_64-linux-musl \
+            CC=`realpath ../../../../x86_64-linux-musl-cross/bin/x86_64-linux-musl-cc` \
             CFLAGS=-I`realpath ../../../../libudev-zero/x64/usr/local/include` \
-            LDFLAGS="--static -Wl,--strip-all  -L`realpath ../../../../libudev-zero/x64/usr/local/lib`"
+            LDFLAGS="--static -Wl,--strip-all  -L`realpath ../../../../libudev-zero/x64/usr/local/lib`" \
+            --disable-shared
           make clean
           make -C libsrc
           make -C src usbip
@@ -66,9 +79,12 @@ jobs:
       - name: Build usbip (arm64)
         run: |
           cd WSL2-Linux-Kernel/tools/usb/usbip
-          ./configure --host=aarch64-linux-gnu --disable-shared \
+          ./configure \
+            --host=aarch64-linux-musl \
+            CC=`realpath ../../../../aarch64-linux-musl-cross/bin/aarch64-linux-musl-cc` \
             CFLAGS=-I`realpath ../../../../libudev-zero/arm64/usr/local/include` \
-            LDFLAGS="--static -Wl,--strip-all  -L`realpath ../../../../libudev-zero/arm64/usr/local/lib`"
+            LDFLAGS="--static -Wl,--strip-all  -L`realpath ../../../../libudev-zero/arm64/usr/local/lib`" \
+            --disable-shared
           make clean
           make -C libsrc
           make -C src usbip
