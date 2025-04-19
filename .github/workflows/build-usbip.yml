@@ -27,10 +27,10 @@ jobs:
 
       - name: Install tooling
         run: |
-          wget https://musl.cc/x86_64-linux-musl-cross.tgz
-          wget https://musl.cc/aarch64-linux-musl-cross.tgz
-          tar xvfz x86_64-linux-musl-cross.tgz
-          tar aarch64-linux-musl-cross.tgz
+          wget --no-verbose https://musl.cc/x86_64-linux-musl-cross.tgz
+          wget --no-verbose https://musl.cc/aarch64-linux-musl-cross.tgz
+          tar xfz x86_64-linux-musl-cross.tgz
+          tar xfz aarch64-linux-musl-cross.tgz
 
       - name: Build libudev (x64)
         run: |
