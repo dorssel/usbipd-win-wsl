@@ -26,11 +26,14 @@ jobs:
           submodules: recursive
 
       - name: Install tooling
+        # See https://musl.cc/ and https://github.com/orgs/community/discussions/27906#discussioncomment-3332440
+        # GitHub actions are blocked, so we use a mirror.
+        # As a bonus, this allows us to pin to a certain toolchain release version.
         run: |
-          wget --no-verbose https://musl.cc/x86_64-linux-musl-cross.tgz
-          wget --no-verbose https://musl.cc/aarch64-linux-musl-cross.tgz
-          tar xfz x86_64-linux-musl-cross.tgz
-          tar xfz aarch64-linux-musl-cross.tgz
+          wget --no-verbose https://github.com/xmake-mirror/musl.cc/releases/download/20210202/x86_64-linux-musl-cross.linux.tgz
+          wget --no-verbose https://github.com/xmake-mirror/musl.cc/releases/download/20210202/aarch64-linux-musl-cross.linux.tgz
+          tar xfz x86_64-linux-musl-cross.linux.tgz
+          tar xfz aarch64-linux-musl-cross.linux.tgz
 
       - name: Build libudev (x64)
         run: |
