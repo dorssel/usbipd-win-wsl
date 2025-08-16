@@ -4,3 +4,4 @@
 [submodule "libudev-zero"]
 	path = libudev-zero
 	url = https://github.com/illiliti/libudev-zero
+	ignore = untracked

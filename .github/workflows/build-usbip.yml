@@ -71,7 +71,7 @@ jobs:
             --host=x86_64-linux-musl \
             CC=`realpath ../../../../x86_64-linux-musl-cross/bin/x86_64-linux-musl-cc` \
             CFLAGS=-I`realpath ../../../../libudev-zero/x64/usr/local/include` \
-            LDFLAGS="--static -Wl,--strip-all  -L`realpath ../../../../libudev-zero/x64/usr/local/lib`" \
+            LDFLAGS="--static-pie -Wl,--strip-all  -L`realpath ../../../../libudev-zero/x64/usr/local/lib`" \
             --disable-shared
           make clean
           make -C libsrc
@@ -86,7 +86,7 @@ jobs:
             --host=aarch64-linux-musl \
             CC=`realpath ../../../../aarch64-linux-musl-cross/bin/aarch64-linux-musl-cc` \
             CFLAGS=-I`realpath ../../../../libudev-zero/arm64/usr/local/include` \
-            LDFLAGS="--static -Wl,--strip-all  -L`realpath ../../../../libudev-zero/arm64/usr/local/lib`" \
+            LDFLAGS="--static-pie -Wl,--strip-all  -L`realpath ../../../../libudev-zero/arm64/usr/local/lib`" \
             --disable-shared
           make clean
           make -C libsrc

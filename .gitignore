@@ -1,0 +1,8 @@
+# SPDX-FileCopyrightText: 2025 Frans van Dorsselaer
+#
+# SPDX-License-Identifier: GPL-3.0-only
+
+aarch64-linux-musl-cross/
+aarch64-linux-musl-cross.linux.tgz
+x86_64-linux-musl-cross/
+x86_64-linux-musl-cross.linux.tgz
